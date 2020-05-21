@@ -71,11 +71,10 @@ class GameScreen(Screen):
     o_points = 0
     x_wins = Label()
     o_wins = Label()
-    winning_trios = [
-        [0, 1, 2], [3, 4, 5], [6, 7, 8],  # Horizontal
-        [0, 3, 6], [1, 4, 7], [2, 5, 8],  # Vertical
-        [0, 4, 8], [2, 4, 6]  # Diagonal
-    ]
+    winning_positions = [   [0, 1, 2], [3, 4, 5], [6, 7, 8],  # Horizontal win
+                        [0, 3, 6], [1, 4, 7], [2, 5, 8],  # Vertical win
+                        [0, 4, 8], [2, 4, 6]  # Diagonal win
+                    ]
     board = list()
 
     # Main layout setup
@@ -94,9 +93,11 @@ class GameScreen(Screen):
             self.board.append(btn)
             self.layout.add_widget(btn)
 
+        # X's scoring
         self.x_wins = Label(bold=True, font_size=120, text='X: ' + str(self.x_points), color=(0.83, 0.36, 0.64, 1))
         self.layout.add_widget(self.x_wins)
 
+        # O's scoring
         self.o_wins = Label(font_size=120, text='O: ' + str(self.o_points), color=(0.83, 0.36, 0.64, 1))
         self.layout.add_widget(self.o_wins)
 
@@ -122,7 +123,7 @@ class GameScreen(Screen):
     def click_box(self, button):
         # if a draw, reset board
         if self.filledBox == 9:
-            self.reset_board()
+            self.reset_board
 
         # if its 'Xs' turn
         elif self.turn == "X" and button.text == " ":
@@ -144,6 +145,7 @@ class GameScreen(Screen):
 
     # When the reset board button is clicked delete all values on the board
     def reset_board(self, button):
+        self.filledBox = 0
         for button in self.board:
             button.text = " "
             button.disabled = False
@@ -168,7 +170,7 @@ class GameScreen(Screen):
 
     # Checks if anyone has won
     def check_win(self):
-        for trio in self.winning_trios:
+        for trio in self.winning_positions:
             if self.board[trio[0]].text == "X" and self.board[trio[1]].text == "X" and self.board[trio[2]].text == "X":
                 self.x_points += 1
                 self.x_wins.text = 'X: ' + str(self.x_points)
@@ -184,6 +186,7 @@ class GameScreen(Screen):
             button.text = " "
             button.disabled = False
             button.color = (1, 1, 1, 1)
+        self.filledBox = 0
         self.o_points = 0
         self.x_points = 0
         self.o_wins.text = 'O: ' + str(self.o_points)
