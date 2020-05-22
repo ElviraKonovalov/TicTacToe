@@ -1,3 +1,4 @@
 # TicTacToe
 ![Game menu](ttt1.png)
-Format: ![Alt Text](url)
+![Game menu](ttt2.png)
+![Game menu](ttt3.png)
