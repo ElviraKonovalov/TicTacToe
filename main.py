@@ -14,6 +14,7 @@ from kivy.lang import Builder
 from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.core.window import Window
+from kivy.uix.popup import Popup
 
 
 Builder.load_string("""
@@ -119,11 +120,16 @@ class GameScreen(Screen):
         self.reset_choices.add_widget(reset_game_btn)
         self.layout.add_widget(self.reset_choices)
 
+    def popup_results(self, result):
+        popup = Popup( title="GAME RESULTS:", content=Label(text=result), size=(400,200), size_hint=(None, None))
+        popup.bind(on_dismiss=self.reset_board)
+        popup.open()
+
     # When a move is made
     def click_box(self, button):
-        # if a draw, reset board
-        if self.filledBox == 9:
-            self.reset_board
+        # If the board is full, we declare the result as 'tie' and reset the board
+        if self.filledBox >= 8:
+            self.popup_results('Its tie!')
 
         # if its 'Xs' turn
         elif self.turn == "X" and button.text == " ":
@@ -172,10 +178,12 @@ class GameScreen(Screen):
     def check_win(self):
         for trio in self.winning_positions:
             if self.board[trio[0]].text == "X" and self.board[trio[1]].text == "X" and self.board[trio[2]].text == "X":
+                self.popup_results('X wins this round!')
                 self.x_points += 1
                 self.x_wins.text = 'X: ' + str(self.x_points)
                 self.win(self.board[trio[0]], self.board[trio[1]], self.board[trio[2]])
             if self.board[trio[0]].text == "O" and self.board[trio[1]].text == "O" and self.board[trio[2]].text == "O":
+                self.popup_results('O wins this round!')
                 self.o_points += 1
                 self.o_wins.text = 'O: ' + str(self.o_points)
                 self.win(self.board[trio[0]], self.board[trio[1]], self.board[trio[2]])
