@@ -12,7 +12,7 @@ from kivy.uix.label import Label
 from kivy.core.window import Window
 from kivy.uix.popup import Popup
 
-from ai import Ai
+from newai import AiNew
 
 
 class OnePlayerScreen(Screen):
@@ -36,17 +36,7 @@ class OnePlayerScreen(Screen):
                          [0, 4, 8], [2, 4, 6]  # Diagonal win
                          ]
     board = list()
-
-    def init_players(self):
-        self.ai = Ai(self.letter[randint(0, 1)]);
-        self.player = "X" if self.ai.letter == "O" else "O"
-        turn = randint(0, 1)
-        if turn == 1:
-            self.ai.make_ai_move(self.board, self.winning_positions)
-            #greeting = "Hello Player! Computer plays first! You are playing with \"" + self.player + "\""
-        #else:
-           # greeting = "Hello Player! You are playing with \"" + self.player + "\""
-       # self.popup_message(greeting)
+    letters = ["X", "O"]
 
     # Main layout setup
     def __init__(self, **kwargs):
@@ -90,6 +80,23 @@ class OnePlayerScreen(Screen):
         self.reset_choices.add_widget(reset_game_btn)
         self.layout.add_widget(self.reset_choices)
 
+        self.ai = AiNew(self.letters[randint(0, 1)])
+        self.player = "X" if self.ai.letter == "O" else "O"
+        if randint(0, 1) == 1:
+            print("Hello Player! Computer plays first!")
+            self.popup_message("Hello Player! Computer plays first!")
+            self.ai.make_ai_best_move(self.board)
+            self.turn = "X" if self.ai.letter == "O" else "O"
+        else:
+            print("Hello Player! You play first!")
+            self.popup_message("Hello Player! Computer plays first!")
+            self.turn = "O" if self.ai.letter == "O" else "X"
+
+    def popup_message(self, message):
+        popup = Popup(title="HELLO", content=Label(text=message), size=(400, 200), size_hint=(None, None))
+        popup.bind(on_dismiss=self.reset_board)
+        popup.open()
+
     def popup_results(self, result):
         popup = Popup(title="GAME RESULTS:", content=Label(text=result), size=(400, 200), size_hint=(None, None))
         popup.bind(on_dismiss=self.reset_board)
@@ -101,23 +108,14 @@ class OnePlayerScreen(Screen):
         if self.filledBox >= 8:
             self.popup_results('Its tie!')
 
-        # if its 'Xs' turn
-        elif self.turn == "X" and button.text == " ":
-            button.text = "X"
+        if button.text == " ":
+            button.text = self.player
             self.filledBox += 1
-            self.turn = "O"  # its "Os" move
+            self.turn = self.ai  # its "Os" move
             self.o_wins.bold = True  # its 'Os' move so becomes bold
             self.x_wins.bold = False
             self.check_win()  # check winner after every move
-
-        # if its 'Os' turn
-        elif self.turn == "O" and button.text == " ":
-            button.text = "O"
-            self.filledBox += 1
-            self.turn = "X"  # its "Xs" move
-            self.x_wins.bold = True  # its 'Xs' move so becomes bold
-            self.o_wins.bold = False
-            self.check_win()  # check winner after every move
+            self.ai.make_ai_best_move(self.board)
 
     # When the reset board button is clicked delete all values on the board
     def reset_board(self, button):
@@ -147,16 +145,22 @@ class OnePlayerScreen(Screen):
     # Checks if anyone has won
     def check_win(self):
         for trio in self.winning_positions:
+            print(self.board[trio[0]].text)
             if self.board[trio[0]].text == "X" and self.board[trio[1]].text == "X" and self.board[trio[2]].text == "X":
                 self.popup_results('X wins this round!')
                 self.x_points += 1
                 self.x_wins.text = 'X: ' + str(self.x_points)
                 self.win(self.board[trio[0]], self.board[trio[1]], self.board[trio[2]])
+                return "X"
             if self.board[trio[0]].text == "O" and self.board[trio[1]].text == "O" and self.board[trio[2]].text == "O":
                 self.popup_results('O wins this round!')
                 self.o_points += 1
                 self.o_wins.text = 'O: ' + str(self.o_points)
                 self.win(self.board[trio[0]], self.board[trio[1]], self.board[trio[2]])
+                return "O"
+            if self.filledBox >= 8:
+                return "TIE"
+        return " "
 
     # When the restart game button is clicked reset all points to 0
     def reset_game(self, button):

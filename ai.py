@@ -1,4 +1,4 @@
-from onePlayer import OnePlayerScreen
+
 
 
 class Ai:

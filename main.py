@@ -40,7 +40,7 @@ Builder.load_string("""
             text: 'Player vs Player'
             font_size: 85
             # text_size: self.size
-            on_press: root.manager.current = 'third'
+            on_press: root.manager.current = 'second'
         
         Button:
             pos_hint: {'x': 0, 'y': -0.35}
@@ -49,7 +49,7 @@ Builder.load_string("""
             text: 'Player vs Computer'
             font_size: 85
             # text_size: self.size
-            on_press: root.manager.current = 'second'
+            on_press: root.manager.current = 'third'
             
 <TwoPlayerScreen>
     canvas:
