@@ -83,13 +83,13 @@ class OnePlayerScreen(Screen):
         self.ai = AiNew(self.letters[randint(0, 1)])
         self.player = "X" if self.ai.letter == "O" else "O"
         if randint(0, 1) == 1:
-            print("Hello Player! Computer plays first!")
-            self.popup_message("Hello Player! Computer plays first!")
-            self.ai.make_ai_best_move(self.board)
+            print("Hello Player! Computer plays first!\n"+"player: "+self.player+"\n"+"ai: "+self.ai.letter)
+            self.popup_message("Hello Player! Computer plays first!\n"+"player: "+self.player+"\n"+"ai: "+self.ai.letter)
+            self.ai.make_ai_best_move(self.board, self.player)
             self.turn = "X" if self.ai.letter == "O" else "O"
         else:
-            print("Hello Player! You play first!")
-            self.popup_message("Hello Player! Computer plays first!")
+            print("Hello Player! You play first!\n"+"player: "+self.player+"\n"+"ai: "+self.ai.letter)
+            self.popup_message("Hello Player! Computer plays first!\n"+"player: "+self.player+"\n"+"ai: "+self.ai.letter)
             self.turn = "O" if self.ai.letter == "O" else "X"
 
     def popup_message(self, message):
@@ -112,10 +112,14 @@ class OnePlayerScreen(Screen):
             button.text = self.player
             self.filledBox += 1
             self.turn = self.ai  # its "Os" move
-            self.o_wins.bold = True  # its 'Os' move so becomes bold
-            self.x_wins.bold = False
+            #self.o_wins.bold = True  # its 'Os' move so becomes bold
+            #self.x_wins.bold = False
             self.check_win()  # check winner after every move
-            self.ai.make_ai_best_move(self.board)
+            self.ai.make_ai_best_move(self.board, self.player)
+            self.check_win()
+            self.turn = self.player  # its "Os" move
+            #self.o_wins.bold = True  # its 'Os' move so becomes bold
+            #self.x_wins.bold = False
 
     # When the reset board button is clicked delete all values on the board
     def reset_board(self, button):
@@ -160,7 +164,7 @@ class OnePlayerScreen(Screen):
                 return "O"
             if self.filledBox >= 8:
                 return "TIE"
-        return " "
+        return "NOT DONE"
 
     # When the restart game button is clicked reset all points to 0
     def reset_game(self, button):
