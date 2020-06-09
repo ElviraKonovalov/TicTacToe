@@ -82,16 +82,16 @@ class OnePlayerScreen(Screen):
 
         self.ai = AiNew(self.letters[randint(0, 1)])
         self.player = "X" if self.ai.letter == "O" else "O"
-        if randint(0, 1) == 1:
-            self.turn = self.ai
-            print("Hello Player! Computer plays first!\n"+"player: "+self.player+"\n"+"ai: "+self.ai.letter)
-            self.popup_message("Hello Player! Computer plays first!\n"+"player: "+self.player+"\n"+"ai: "+self.ai.letter)
-            self.board = self.ai.make_ai_best_move(self.board, self.player)
-            self.turn = self.player
-        else:
-            self.turn = self.player
-            print("Hello Player! You play first!\n"+"player: "+self.player+"\n"+"ai: "+self.ai.letter)
-            self.popup_message("Hello Player! Computer plays first!\n"+"player: "+self.player+"\n"+"ai: "+self.ai.letter)
+        #if randint(0, 1) == 1:
+        self.turn = self.ai
+        print("Hello Player! Computer plays first!\n"+"player: "+self.player+"\n"+"ai: "+self.ai.letter)
+        self.popup_message("Hello Player! Computer plays first!\n"+"player: "+self.player+"\n"+"ai: "+self.ai.letter)
+        self.board = self.ai.make_ai_best_move(self.board, self.player)
+        self.turn = self.player
+        #else:
+            #self.turn = self.player
+            #print("Hello Player! You play first!\n"+"player: "+self.player+"\n"+"ai: "+self.ai.letter)
+            #self.popup_message("Hello Player! Computer plays first!\n"+"player: "+self.player+"\n"+"ai: "+self.ai.letter)
 
     def popup_message(self, message):
         popup = Popup(title="HELLO", content=Label(text=message), size=(400, 200), size_hint=(None, None))
@@ -133,6 +133,10 @@ class OnePlayerScreen(Screen):
             button.disabled_color = (0.16, 0.22, 0.298, 0.95)
             button.background_disabled_normal = 'background.jpg'
             button.background_normal = 'background.jpg'
+        self.turn = self.ai
+        print("Hello Player! Computer plays first!\n" + "player: " + self.player + "\n" + "ai: " + self.ai.letter)
+        self.board = self.ai.make_ai_best_move(self.board, self.player)
+        self.turn = self.player
 
     # If anyone has won
     def win(self, btn1, btn2, btn3):
@@ -178,4 +182,8 @@ class OnePlayerScreen(Screen):
         self.x_points = 0
         self.o_wins.text = 'O: ' + str(self.o_points)
         self.x_wins.text = 'X: ' + str(self.x_points)
+        self.turn = self.ai
+        print("Hello Player! Computer plays first!\n" + "player: " + self.player + "\n" + "ai: " + self.ai.letter)
+        self.board = self.ai.make_ai_best_move(self.board, self.player)
+        self.turn = self.player
 
