@@ -133,14 +133,3 @@ class AiNew:
                     best_score = score
                     best_depth = depth
             return [best_score, best_depth]
-
- if randint(0, 1) == 1:
-            self.turn = self.ai
-            print("Hello Player! Computer plays first!\n"+"player: "+self.player+"\n"+"ai: "+self.ai.letter)
-            self.popup_message("Hello Player! Computer plays first!\n"+"player: "+self.player+"\n"+"ai: "+self.ai.letter)
-            self.board = self.ai.make_ai_best_move(self.board, self.player)
-            self.turn = self.player
-        else:
-            self.turn = self.player
-            print("Hello Player! You play first!\n"+"player: "+self.player+"\n"+"ai: "+self.ai.letter)
-            self.popup_message("Hello Player! Computer plays first!\n"+"player: "+self.player+"\n"+"ai: "+self.ai.letter)

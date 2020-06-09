@@ -30,14 +30,11 @@ class AiNew:
         for i in range(9):
             new_board.append(board[i].text)
         for i in range(9):
-            depth = 0
-            # print("hey"+str(i))
             if new_board[i] == " ":
                 new_board[i] = self.letter
-                score_depth = self.get_score(new_board, depth, False,  player)
+                score_depth = self.get_score(new_board, best_depth, False,  player)
                 score = score_depth[0]
                 depth = score_depth[1]
-                print("move: "+str(i)+" score: "+str(score)+" depth: "+str(depth))
                 new_board[i] = " "
                 if score > best_score:
                     best_score = score
@@ -46,9 +43,8 @@ class AiNew:
                 elif score == best_score and depth < best_depth:
                     best_depth = depth
                     ai_best_move = i
-        #print("best ai move is "+str(ai_best_move))
+        print("best ai move is "+str(ai_best_move))
         board[ai_best_move].text = self.letter
-        print("------------------------")
         return board
 
     def get_score(self, new_board, depth, is_maxi, player):
