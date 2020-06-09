@@ -82,16 +82,11 @@ class OnePlayerScreen(Screen):
 
         self.ai = AiNew(self.letters[randint(0, 1)])
         self.player = "X" if self.ai.letter == "O" else "O"
-        if randint(0, 1) == 1:
-            self.turn = self.ai
-            print("Hello Player! Computer plays first!\n"+"player: "+self.player+"\n"+"ai: "+self.ai.letter)
-            self.popup_message("Hello Player! Computer plays first!\n"+"player: "+self.player+"\n"+"ai: "+self.ai.letter)
-            self.board = self.ai.make_ai_best_move(self.board, self.player)
-            self.turn = self.player
-        else:
-            self.turn = self.player
-            print("Hello Player! You play first!\n"+"player: "+self.player+"\n"+"ai: "+self.ai.letter)
-            self.popup_message("Hello Player! Computer plays first!\n"+"player: "+self.player+"\n"+"ai: "+self.ai.letter)
+        self.turn = self.ai
+        print("Hello Player! Computer plays first!\n"+"player: "+self.player+"\n"+"ai: "+self.ai.letter)
+        self.popup_message("Hello Player! Computer plays first!\n"+"player: "+self.player+"\n"+"ai: "+self.ai.letter)
+        self.board = self.ai.make_ai_best_move(self.board, self.player)
+        self.turn = self.player
 
     def popup_message(self, message):
         popup = Popup(title="HELLO", content=Label(text=message), size=(400, 200), size_hint=(None, None))
@@ -150,7 +145,7 @@ class OnePlayerScreen(Screen):
     # Checks if anyone has won
     def check_win(self):
         for trio in self.winning_positions:
-            print(self.board[trio[0]].text)
+            #print(self.board[trio[0]].text)
             if self.board[trio[0]].text == "X" and self.board[trio[1]].text == "X" and self.board[trio[2]].text == "X":
                 self.popup_results('X wins this round!')
                 self.x_points += 1
