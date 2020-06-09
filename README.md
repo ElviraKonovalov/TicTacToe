@@ -6,4 +6,5 @@ Simple implementation of Two Player Tic-Tac-Toe game using Python and Kivy.
 ![Game menu](ttt3.png)  
   
 This program was created for learning purposes.  
-TO DO: player vs ai  
+TO DO:   
+- [ ] player vs ai
