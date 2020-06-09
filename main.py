@@ -16,7 +16,7 @@ from kivy.uix.label import Label
 from kivy.core.window import Window
 from kivy.uix.popup import Popup
 
-from twoPlayer import TwoPlayerScreen
+#from twoPlayer import TwoPlayerScreen
 from onePlayer import OnePlayerScreen
 
 Builder.load_string("""
@@ -40,7 +40,7 @@ Builder.load_string("""
             text: 'Player vs Player'
             font_size: 85
             # text_size: self.size
-            on_press: root.manager.current = 'second'
+            #on_press: root.manager.current = 'second'
         
         Button:
             pos_hint: {'x': 0, 'y': -0.35}
@@ -78,7 +78,7 @@ class TestApp(App):
     def build(self):
         sm = ScreenManager()
         sm.add_widget(MenuScreen(name='first'))
-        sm.add_widget(TwoPlayerScreen(name='second'))
+        #sm.add_widget(TwoPlayerScreen(name='second'))
         sm.add_widget(OnePlayerScreen(name='third'))
         Window.minimum_width = 640
         Window.minimum_height = 360

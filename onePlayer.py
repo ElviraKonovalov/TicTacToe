@@ -83,14 +83,15 @@ class OnePlayerScreen(Screen):
         self.ai = AiNew(self.letters[randint(0, 1)])
         self.player = "X" if self.ai.letter == "O" else "O"
         if randint(0, 1) == 1:
+            self.turn = self.ai
             print("Hello Player! Computer plays first!\n"+"player: "+self.player+"\n"+"ai: "+self.ai.letter)
             self.popup_message("Hello Player! Computer plays first!\n"+"player: "+self.player+"\n"+"ai: "+self.ai.letter)
-            self.ai.make_ai_best_move(self.board, self.player)
-            self.turn = "X" if self.ai.letter == "O" else "O"
+            self.board = self.ai.make_ai_best_move(self.board, self.player)
+            self.turn = self.player
         else:
+            self.turn = self.player
             print("Hello Player! You play first!\n"+"player: "+self.player+"\n"+"ai: "+self.ai.letter)
             self.popup_message("Hello Player! Computer plays first!\n"+"player: "+self.player+"\n"+"ai: "+self.ai.letter)
-            self.turn = "O" if self.ai.letter == "O" else "X"
 
     def popup_message(self, message):
         popup = Popup(title="HELLO", content=Label(text=message), size=(400, 200), size_hint=(None, None))
@@ -108,14 +109,14 @@ class OnePlayerScreen(Screen):
         if self.filledBox >= 8:
             self.popup_results('Its tie!')
 
-        if button.text == " ":
+        if button.text == " " and self.turn == self.player:
             button.text = self.player
             self.filledBox += 1
             self.turn = self.ai  # its "Os" move
             #self.o_wins.bold = True  # its 'Os' move so becomes bold
             #self.x_wins.bold = False
             self.check_win()  # check winner after every move
-            self.ai.make_ai_best_move(self.board, self.player)
+            self.board = self.ai.make_ai_best_move(self.board, self.player)
             self.check_win()
             self.turn = self.player  # its "Os" move
             #self.o_wins.bold = True  # its 'Os' move so becomes bold
