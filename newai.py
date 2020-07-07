@@ -23,21 +23,24 @@ class AiNew:
         return "NOT DONE"
 
     def make_ai_best_move(self, board, player):
+        from onePlayer import OnePlayerScreen
         best_score = -math.inf
         ai_best_move = -1
         new_board = list()
-        best_depth = 0
+        best_depth = math.inf
+        best_wins = 0
         for i in range(9):
             new_board.append(board[i].text)
         for i in range(9):
-            depth = 0
+            #depth = 0
             # print("hey"+str(i))
             if new_board[i] == " ":
                 new_board[i] = self.letter
-                score_depth = self.get_score(new_board, depth, False,  player)
+                score_depth = self.get_score(new_board, 0, False,  player, 0)
                 score = score_depth[0]
                 depth = score_depth[1]
-                print("move: "+str(i)+" score: "+str(score)+" depth: "+str(depth))
+                possible_wins = score_depth[2]
+                print("move: "+str(i)+" score: "+str(score)+" depth: "+str(depth)+" wins: "+str(possible_wins))
                 new_board[i] = " "
                 if score > best_score:
                     best_score = score
@@ -46,32 +49,40 @@ class AiNew:
                 elif score == best_score and depth < best_depth:
                     best_depth = depth
                     ai_best_move = i
+                elif score == best_score and depth == best_depth and best_wins < possible_wins:
+                    best_score = score
+                    best_depth = depth
+                    best_wins = possible_wins
+                    ai_best_move = i
         #print("best ai move is "+str(ai_best_move))
         board[ai_best_move].text = self.letter
         print("------------------------")
         return board
 
-    def get_score(self, new_board, depth, is_maxi, player):
+    def get_score(self, new_board, depth, is_maxi, player, possible_wins):
         result = self.check_score(new_board)
         if result != "NOT DONE":
             if result == "TIE":
                 # print("tie")
-                return [0, depth]
+                return [0, depth, possible_wins]
             if result == self.letter:
+                possible_wins += 1
                 # print("ai wins")
-                return [1, depth]
+                return [1, depth, possible_wins]
             if result == player:
                 # print("player wins")
-                return [-1, depth]
+                return [-1, depth, possible_wins]
         if is_maxi: # If AI player
             best_score = -math.inf
-            best_depth = 0
+            best_depth = math.inf
+            best_wins = possible_wins
             for i in range(9):
                 if new_board[i] == " ":
                     new_board[i] = self.letter
-                    score_depth = self.get_score(new_board, depth + 1, False, player)
+                    score_depth = self.get_score(new_board, depth + 1, False, player, possible_wins)
                     score = score_depth[0]
                     depth = score_depth[1]
+                    possible_wins = score_depth[2]
                     new_board[i] = " "
                     if score > best_score:
                         best_score = score
@@ -80,16 +91,22 @@ class AiNew:
                     elif score == best_score and depth < best_depth:
                         best_depth = depth
                         # ai_best_move = i
-            return [best_score, best_depth]
+                    elif score == best_score and depth == best_depth and best_wins < possible_wins:
+                        best_score = score
+                        best_depth = depth
+                        best_wins = possible_wins
+            return [best_score, best_depth, best_wins]
         else:
             best_score = math.inf
             best_depth = 0
+            best_wins = possible_wins
             for i in range(9):
                 if new_board[i] == " ":
                     new_board[i] = player
-                    score_depth = self.get_score(new_board, depth + 1, True, player)
+                    score_depth = self.get_score(new_board, depth + 1, True, player, possible_wins)
                     score = score_depth[0]
                     depth = score_depth[1]
+                    possible_wins = score_depth[2]
                     new_board[i] = " "
                     if score < best_score:
                         best_score = score
@@ -98,4 +115,8 @@ class AiNew:
                     elif score == best_score and depth < best_depth:
                         best_depth = depth
                         #  ai_best_move = i
-            return [best_score, best_depth]
+                    elif score == best_score and depth == best_depth and best_wins < possible_wins:
+                        best_score = score
+                        best_depth = depth
+                        best_wins = possible_wins
+            return [best_score, best_depth, best_wins]

@@ -37,6 +37,7 @@ class OnePlayerScreen(Screen):
                          ]
     board = list()
     letters = ["X", "O"]
+    player_move = False
 
     # Main layout setup
     def __init__(self, **kwargs):
@@ -80,22 +81,39 @@ class OnePlayerScreen(Screen):
         self.reset_choices.add_widget(reset_game_btn)
         self.layout.add_widget(self.reset_choices)
 
-        self.ai = AiNew(self.letters[randint(0, 1)])
-        self.player = "X" if self.ai.letter == "O" else "O"
-        #if randint(0, 1) == 1:
-        self.turn = self.ai
-        print("Hello Player! Computer plays first!\n"+"player: "+self.player+"\n"+"ai: "+self.ai.letter)
-        self.popup_message("Hello Player! Computer plays first!\n"+"player: "+self.player+"\n"+"ai: "+self.ai.letter)
-        self.board = self.ai.make_ai_best_move(self.board, self.player)
-        self.turn = self.player
+
+
+        self.start_game()
+
+        #print("Hello Player! Computer plays first!\n"+"player: "+self.player+"\n"+"ai: "+self.ai.letter)
+        #self.popup_message("Hello Player! Computer plays first!\n"+"player: "+self.player+"\n"+"ai: "+self.ai.letter)
+        #self.turn = self.player
+       # print("Hello Player! You play first!\n" + "player: " + self.player + "\n" + "ai: " + self.ai.letter)
+        #self.turn = self.player
         #else:
             #self.turn = self.player
             #print("Hello Player! You play first!\n"+"player: "+self.player+"\n"+"ai: "+self.ai.letter)
             #self.popup_message("Hello Player! Computer plays first!\n"+"player: "+self.player+"\n"+"ai: "+self.ai.letter)
 
+    def start_game(self):
+        """
+        self.ai = AiNew(self.letters[randint(0, 1)])
+        self.player = "X" if self.ai.letter == "O" else "O"
+        # if randint(0, 1) == 1:
+        self.turn = self.ai.letter
+        self.popup_message(
+            "Hello Player! Computer plays first!\n" + "player: " + self.player + "\n" + "ai: " + self.ai.letter)
+        self.board = self.ai.make_ai_best_move(self.board, self.player)
+        self.turn = self.player
+        """
+        self.ai = AiNew(self.letters[randint(0, 1)])
+        self.player = "X" if self.ai.letter == "O" else "O"
+        self.board = self.ai.make_ai_best_move(self.board, self.player)
+        self.turn = self.player
+
     def popup_message(self, message):
         popup = Popup(title="HELLO", content=Label(text=message), size=(400, 200), size_hint=(None, None))
-        popup.bind(on_dismiss=self.reset_board)
+        #popup.bind(on_dismiss=self.reset_board)
         popup.open()
 
     def popup_results(self, result):
@@ -110,19 +128,26 @@ class OnePlayerScreen(Screen):
             self.popup_results('Its tie!')
 
         if button.text == " " and self.turn == self.player:
+            self.player_move = True
             button.text = self.player
             self.filledBox += 1
-            self.turn = self.ai  # its "Os" move
+            #self.turn = self.ai  # its "Os" move
             #self.o_wins.bold = True  # its 'Os' move so becomes bold
             #self.x_wins.bold = False
-            self.check_win()  # check winner after every move
-            self.board = self.ai.make_ai_best_move(self.board, self.player)
-            self.check_win()
-            self.turn = self.player  # its "Os" move
+            result = self.check_win()  # check winner after every move
+            if result != "Win":
+                self.turn = self.ai.letter
+                self.ai_turn()
+                self.turn = self.player
             #self.o_wins.bold = True  # its 'Os' move so becomes bold
             #self.x_wins.bold = False
 
-    # When the reset board button is clicked delete all values on the board
+    def ai_turn(self):
+        print("hey")
+        self.board = self.ai.make_ai_best_move(self.board, self.player)
+        self.check_win()
+
+        # When the reset board button is clicked delete all values on the board
     def reset_board(self, button):
         self.filledBox = 0
         for button in self.board:
@@ -133,7 +158,7 @@ class OnePlayerScreen(Screen):
             button.disabled_color = (0.16, 0.22, 0.298, 0.95)
             button.background_disabled_normal = 'background.jpg'
             button.background_normal = 'background.jpg'
-        self.turn = self.ai
+        self.turn = self.ai.letter
         print("Hello Player! Computer plays first!\n" + "player: " + self.player + "\n" + "ai: " + self.ai.letter)
         self.board = self.ai.make_ai_best_move(self.board, self.player)
         self.turn = self.player
@@ -154,22 +179,20 @@ class OnePlayerScreen(Screen):
     # Checks if anyone has won
     def check_win(self):
         for trio in self.winning_positions:
-            print(self.board[trio[0]].text)
+            #print(self.board[trio[0]].text)
             if self.board[trio[0]].text == "X" and self.board[trio[1]].text == "X" and self.board[trio[2]].text == "X":
                 self.popup_results('X wins this round!')
                 self.x_points += 1
                 self.x_wins.text = 'X: ' + str(self.x_points)
                 self.win(self.board[trio[0]], self.board[trio[1]], self.board[trio[2]])
-                return "X"
+                return "Win"
             if self.board[trio[0]].text == "O" and self.board[trio[1]].text == "O" and self.board[trio[2]].text == "O":
                 self.popup_results('O wins this round!')
                 self.o_points += 1
                 self.o_wins.text = 'O: ' + str(self.o_points)
                 self.win(self.board[trio[0]], self.board[trio[1]], self.board[trio[2]])
-                return "O"
-            if self.filledBox >= 8:
-                return "TIE"
-        return "NOT DONE"
+                return "Win"
+        return "Not Win"
 
     # When the restart game button is clicked reset all points to 0
     def reset_game(self, button):
@@ -182,8 +205,5 @@ class OnePlayerScreen(Screen):
         self.x_points = 0
         self.o_wins.text = 'O: ' + str(self.o_points)
         self.x_wins.text = 'X: ' + str(self.x_points)
-        self.turn = self.ai
-        print("Hello Player! Computer plays first!\n" + "player: " + self.player + "\n" + "ai: " + self.ai.letter)
-        self.board = self.ai.make_ai_best_move(self.board, self.player)
-        self.turn = self.player
+        self.start_game()
 
