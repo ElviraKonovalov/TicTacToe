@@ -145,7 +145,11 @@ class OnePlayerScreen(Screen):
     def ai_turn(self):
         print("hey")
         self.board = self.ai.make_ai_best_move(self.board, self.player)
-        self.check_win()
+        self.filledBox += 1
+        result = self.check_win()
+        if self.filledBox >= 8:
+            self.popup_results('Its tie!')
+
 
         # When the reset board button is clicked delete all values on the board
     def reset_board(self, button):
